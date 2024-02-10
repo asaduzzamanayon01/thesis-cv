@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from ultralytics import YOLO
 import cv2
 import cvzone
@@ -21,7 +22,7 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "teddy bear", "hair drier", "toothbrush", "rickshaw"
               ]
 
-mask = cv2.imread("Mask3.png")
+mask = cv2.imread("Mask6.png")
 
 # Tracking
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
@@ -32,6 +33,17 @@ limits_3 = [980, 0, 980, 1440]
 jaywalk_totalCount = []
 not_jaywalk_totalCount = []
 initial_jaywalk_count = 0
+
+# Create directories for saving screenshots if they don't exist
+if not os.path.exists('jaywalk_screenshots'):
+    os.makedirs('jaywalk_screenshots')
+
+if not os.path.exists('not_jaywalk_screenshots'):
+    os.makedirs('not_jaywalk_screenshots')
+
+# Initialize counts
+prev_jaywalk_count = 0
+prev_not_jaywalk_count = 0
 
 while True:
     success, img = cap.read()
@@ -116,6 +128,16 @@ while True:
     cvzone.putTextRect(img, f' Jaywalk Count: {len(jaywalk_totalCount)}', (50, 50))
     cvzone.putTextRect(img, f' Not Jaywalk Count: {len(not_jaywalk_totalCount)}', (50, 120))
     # cv2.putText(img, str(len(totalCount)), (255, 100), cv2.FONT_HERSHEY_PLAIN, 5, (50, 50, 255), 8)
+
+    # Check if jaywalk count has increased
+    if len(jaywalk_totalCount) > prev_jaywalk_count:
+        cv2.imwrite(f'jaywalk_screenshots/jaywalk_{len(jaywalk_totalCount)}.png', img)
+        prev_jaywalk_count = len(jaywalk_totalCount)
+
+    # Check if not jaywalk count has increased
+    if len(not_jaywalk_totalCount) > prev_not_jaywalk_count:
+        cv2.imwrite(f'not_jaywalk_screenshots/not_jaywalk_{len(not_jaywalk_totalCount)}.png', img)
+        prev_not_jaywalk_count = len(not_jaywalk_totalCount)
 
     cv2.imshow("Image", img)
     cv2.imshow("ImageRegion", imgRegion)
