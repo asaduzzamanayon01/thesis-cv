@@ -6,9 +6,11 @@ import cvzone
 import math
 from sort import *
 
+# change the absolute path
 cap = cv2.VideoCapture("E:\object_detection\Videos\Thesis-1.mp4")  # For Video
 
-model = YOLO("../Yolo-Weights/yolov8mE.pt")
+# Download the yolov8mRSU from Google Drive. and change the absolute path
+model = YOLO("../Yolo-Weights/yolov8mRSU.pt")
 
 # classNames_2 = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
 #               "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
